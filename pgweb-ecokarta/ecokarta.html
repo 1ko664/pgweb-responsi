@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Ecotourism Places Map</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <!-- Search CSS Library -->
+    <link rel="stylesheet" href="assets/plugins/plugins/plugins/leaflet-search/leaflet-search.css" />
+    <!-- Geolocation CSS Library for Plugin -->
+    <link rel="stylesheet"
+        href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css" />
+    <!-- Leaflet Mouse Position CSS Library -->
+    <link rel="stylesheet" href="assets/plugins/plugins/plugins/leaflet-mouseposition/L.Control.MousePosition.css" />
+    <!-- Leaflet Measure CSS Library -->
+    <link rel="stylesheet" href="assets/plugins/plugins/plugins/leaflet-measure/leaflet-measure.css" />
+    <!-- EasyPrint CSS Library -->
+    <link rel="stylesheet" href="assets/plugins/plugins/plugins/leaflet-easyprint/easyPrint.css" />
+    <!--Routing-->
+    <link rel="stylesheet" href="assets/plugins/plugins/plugins/leaflet-routing/leaflet-routing-machine.css" />
+    <!-- Marker Cluster -->
+    <link rel="stylesheet" href="assets/plugins/plugins/plugins/leaflet-markercluster/MarkerCluster.css" />
+    <link rel="stylesheet" href="assets/plugins/plugins/plugins/leaflet-markercluster/MarkerCluster.Default.css" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <style>
+        /* Background pada Judul */
+        .info {
+            padding: 6px 8px;
+            font: 14px/18px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .info h2 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Search JavaScript Library -->
+    <script src="assets/plugins/plugins/plugins/leaflet-search/leaflet-search.js"></script>
+    <!-- Geolocation Javascript Library -->
+    <script
+        src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
+    <!-- Leaflet Mouse Position JavaScript Library -->
+    <script src="assets/plugins/plugins/plugins/leaflet-mouseposition/L.Control.MousePosition.js"></script>
+    <!-- Leaflet Measure JavaScript Library -->
+    <script src="assets/plugins/plugins/plugins/leaflet-measure/leaflet-measure.js"></script>
+    <!-- EasyPrint JavaScript Library -->
+    <script src="assets/plugins/plugins/plugins/leaflet-easyprint/leaflet.easyPrint.js"></script>
+    <!--Routing-->
+    <script src="assets/plugins/plugins/plugins/leaflet-routing/leaflet-routing-machine.js"></script>
+    <script src="assets/plugins/plugins/plugins/leaflet-routing/leaflet-routing-machine.min.js"></script>
+    <!-- Marker Cluster -->
+    <script src="assets/plugins/plugins/plugins/leaflet-markercluster/leaflet.markercluster.js"></script>
+    <script src="assets/plugins/plugins/plugins/leaflet-markercluster/leaflet.markercluster-src.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <div id="map" style="height: 100vh;"></div>
+
+    <script>
+        /* Initial Map */
+        var map = L.map('map').setView([-6.247562, 106.810522], 11); //lat, long, zoom
+        /* Tile Basemap */
+        var basemap1 = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | <a href="Minarni Kukilo" target="_blank">Minarni Kukilo</a>' //menambahkan nama//
+        });
+        var basemap2 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{ z } / { y } / { x }',
+            {
+                attribution: 'Tiles &copy; Esri | <a href="WebGIS of Ecokarta" target="_blank">Minarni Kukilo</a>'
+            });
+        var basemap3 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{ z } / { y } / { x }',
+            {
+                attribution: 'Tiles &copy; Esri | <a href="WebGIS of Ecokarta" target="_blank">Minarni Kukilo</a>'
+            });
+        var basemap4 = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptile s.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        });
+        basemap1.addTo(map);
+
+        /* Control Layer */
+        var baseMaps = {
+            "OpenStreetMap": basemap1,
+            "Esri World Street": basemap2,
+            "Esri Imagery": basemap3,
+            "Stadia Dark Mode": basemap4
+        };
+
+        L.control.layers(baseMaps).addTo(map);
+
+        /* Scale Bar */
+        L.control.scale({
+            maxWidth: 150,
+            position: 'bottomright'
+        }).addTo(map);
+
+        /*Title*/
+        var title = new L.Control();
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = 'ECOTOURISM PLACES MAP OF JAKARTA'
+        };
+        title.addTo(map);
+
+        /* Image Watermark */
+        L.Control.Watermark = L.Control.extend({
+            onAdd: function (map) {
+                var img = L.DomUtil.create('img');
+                img.src = 'images/logo.png';
+                img.style.width = '100px';
+                return img;
+            }
+        });
+
+        L.control.watermark = function (opts) {
+            return new L.Control.Watermark(opts);
+        }
+
+        L.control.watermark({ position: 'bottomleft' }).addTo(map);
+
+        /*Plugin Geolocation */
+        var locateControl = L.control
+            .locate({
+                position: "topleft",
+                drawCircle: true,
+                follow: true,
+                setView: true,
+                keepCurrentZoomLevel: false,
+                markerStyle: {
+                    weight: 1,
+                    opacity: 0.8,
+                    fillOpacity: 0.8,
+                },
+                circleStyle: {
+                    weight: 1,
+                    clickable: false,
+                },
+                icon: "fas fa-crosshairs",
+                metric: true,
+                strings: {
+                    title: "Click for Your Location",
+                    popup: "You're here. Accuracy {distance} {unit}",
+                    outsideMapBoundsMsg: "Not available",
+                },
+                locateOptions: {
+                    maxZoom: 16,
+                    watch: true,
+                    enableHighAccuracy: true,
+                    maximumAge: 10000,
+                    timeout: 10000,
+                },
+            })
+            .addTo(map);
+
+        /*Plugin Mouse Position Coordinate */
+        L.control.mousePosition({ position: "bottomright", separator: ",", prefix: "Point Coodinate: " }).addTo(map);
+
+        /*Plugin Measurement Tool */
+        var measureControl = new L.Control.Measure({
+            position: "topleft",
+            primaryLengthUnit: "meters",
+            secondaryLengthUnit: "kilometers",
+            primaryAreaUnit: "hectares",
+            secondaryAreaUnit: "sqmeters",
+            activeColor: "#FF0000",
+            completedColor: "#00FF00",
+        });
+        measureControl.addTo(map);
+
+        /*Plugin EasyPrint */
+        L.easyPrint({
+            title: "Print",
+        }).addTo(map);
+
+        /*Plugin Routing*/
+        L.Routing.control({
+            waypoints: [
+                L.latLng(-6.201441933237675, 106.81977349572142),
+                L.latLng(-6.196239, 106.829523)
+            ],
+            routeWhileDragging: true
+        }).addTo(map);
+
+        /* Layer Marker */
+        var addressPoints = [
+        [-6.119244, 106.850148, "Mangrove Forest Pantai Indah Kapuk"],
+        [-6.125697, 106.836368, "Ancol Beach"],
+        [-6.305999, 106.820394, "Allianz Ecopark & Faunaland"],
+        [-6.341239, 106.824247, "Ragunan Zoo"],
+        [-6.341239, 106.824247, "Setu Babakan"],
+        [-6.182044, 106.794634, "Cattleya Park"],
+        [-6.240008, 106.852865, "Tebet Ecopark"],
+        [-6.106251, 106.736670, "Angke Kapuk Mangrove Park"],
+        [-6.104773, 106.762191, "Angke Kapuk Protected Forest"],
+        [-6.196239, 106.829523, "Menteng Park"],
+        [-6.131840, 106.783911, "Penjaringan City Forest Park"],
+        [-6.199455, 106.832503, "Suropati Park"],
+        [-6.103452, 106.732802, "Bird Watching Tower Angke Kapuk"],
+        [-6.111525, 106.732716, "Arboretum Mangrove"],
+        [-6.211104, 106.764523, "Srengseng City Forest"],
+        [-6.300320, 106.904020, "Bird Park Taman Mini Indonesia Indah"],
+        [-6.169848, 106.751205, "Kembangan Utara City Forest"],
+        [-6.245339, 106.793043, "Langsat Park"],
+        [-6.121913, 106.693982, "Citra Garden Lake"],
+        [-6.342173, 106.900945, "Agro Tourism Cilangkap"],
+        [-6.366228, 106.896013, "Bee Tourism Park"],
+        [-6.321442,106.823044, "Spathodea Park"],
+        [-6.306029,106.832554, "Sepat Park"]
+        ];
+
+        var markers = L.markerClusterGroup();
+
+        for (var i = 0; i < addressPoints.length; i++) {
+            var a = addressPoints[i];
+            var title1 = a[2];
+
+            // Corrected marker initialization
+            var marker = L.marker(new L.LatLng(a[0], a[1]), {
+                title: title1
+            });
+
+            marker.bindPopup(title1);
+            markers.addLayer(marker);
+        }
+
+        map.addLayer(markers);
+    </script>
+
+</body>
+
+</html>
